@@ -13,18 +13,29 @@ client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 EMBEDDING_MODEL = "gemini-embedding-001"  # Google's free embedding model
 
 
-def embed_chunks(chunks: List[str], batch_size: int = 100) -> List[List[float]]:
+def embed_chunks(chunks: List[str], batch_size: int = 10) -> List[List[float]]:
     """Embeds chunks using Google Gemini's embedding model in batches."""
     embeddings = []
     for i in range(0, len(chunks), batch_size):
         batch = chunks[i:i + batch_size]
-        response = client.models.embed_content(
-            model=EMBEDDING_MODEL,
-            contents=batch,
-            config=types.EmbedContentConfig(output_dimensionality=768)
-        )
-        for embedding in response.embeddings:
-            embeddings.append(embedding.values)
+        try:
+            response = client.models.embed_content(
+                model=EMBEDDING_MODEL,
+                contents=batch,
+                config=types.EmbedContentConfig(output_dimensionality=768)
+            )
+            for embedding in response.embeddings:
+                embeddings.append(embedding.values)
+        except Exception as e:
+            # Fall back to one-by-one if batch fails
+            for chunk in batch:
+                response = client.models.embed_content(
+                    model=EMBEDDING_MODEL,
+                    contents=chunk,
+                    config=types.EmbedContentConfig(output_dimensionality=768)
+                )
+                embeddings.append(response.embeddings[0].values)
+                time.sleep(0.5)
         # Rate limit: wait between batches
         if i + batch_size < len(chunks):
             time.sleep(1)
