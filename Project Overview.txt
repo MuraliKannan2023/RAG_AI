@@ -1,0 +1,23 @@
+Project Overview
+The Serial Number Validation (SNV) application is developed for users quickly verify the serial numbers against uploaded Excel file. The system supports both manual entry and barcode scanning, making it suitable for operational environments were product tracking and verification.
+Purpose
+The purpose of the application is to validate serial numbers and provide clear visual feedback (success or failure) in the imported file.
+Key Features
+File Upload – Users can upload an Excel file, define the serial number column, and choose whether to hide headers. Uploaded data is displayed in a table.
+Validation Modes – Two modes:
+Success Mode: Shows success if the serial number in the uploaded file.
+Failure Mode: Shows failure if the serial number in the uploaded file.
+Real-Time Validation – Supports manual entry or barcode scanning. Results are displayed with icons in grid table.
+Clear File Function – Allows users to reset the uploaded data and results after confirmation.
+Download Results – Validation results (with timestamps) can be exported as Excel or CSV.
+Validation Result – Serial numbers remain color-coded (green for success, red for failure) for easy tracking.
+Benefits
+Users can import a file and quickly check and validate up to 10,000 serial numbers.
+This application is easy to use and developed as a single page application.
+Users can handle large files containing up to 10,000 records.
+The validated file can be exported as Excel or CSV for tracking
+Non-Functional Requirements:
+This web application as support in any browser desktop.
+File loading under 3 seconds for up to 10,000 serial numbers
+Exported files can open with Excel and CSV file.
+ 

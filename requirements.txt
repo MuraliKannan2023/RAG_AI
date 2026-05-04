@@ -1,0 +1,7 @@
+pypdf
+# openai
+pinecone
+python-dotenv
+google-genai
+groq
+streamlit
