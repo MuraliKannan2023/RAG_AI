@@ -2,6 +2,7 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 import os
+import time
 from typing import List
 
 # Load environment variables from .env file
@@ -12,16 +13,21 @@ client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 EMBEDDING_MODEL = "gemini-embedding-001"  # Google's free embedding model
 
 
-def embed_chunks(chunks: List[str]) -> List[List[float]]:
-    """Embeds chunks using Google Gemini's embedding model."""
+def embed_chunks(chunks: List[str], batch_size: int = 100) -> List[List[float]]:
+    """Embeds chunks using Google Gemini's embedding model in batches."""
     embeddings = []
-    for chunk in chunks:
+    for i in range(0, len(chunks), batch_size):
+        batch = chunks[i:i + batch_size]
         response = client.models.embed_content(
             model=EMBEDDING_MODEL,
-            contents=chunk,
+            contents=batch,
             config=types.EmbedContentConfig(output_dimensionality=768)
         )
-        embeddings.append(response.embeddings[0].values)
+        for embedding in response.embeddings:
+            embeddings.append(embedding.values)
+        # Rate limit: wait between batches
+        if i + batch_size < len(chunks):
+            time.sleep(1)
 
     return embeddings
 
