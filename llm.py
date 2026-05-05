@@ -4,7 +4,14 @@ import os
 
 load_dotenv()
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+def get_secret(key):
+    try:
+        import streamlit as st
+        return st.secrets.get(key, os.getenv(key))
+    except Exception:
+        return os.getenv(key)
+
+client = Groq(api_key=get_secret("GROQ_API_KEY"))
 
 def query_llm_with_context(query: str, context: str):
     system_content = """You are a helpful assistant for answering user queries based on provided context. 
