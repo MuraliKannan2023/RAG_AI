@@ -6,9 +6,16 @@ from typing import List
 # Load environment variables from .env file
 load_dotenv()
 
+def get_secret(key):
+    try:
+        import streamlit as st
+        return st.secrets.get(key, os.getenv(key))
+    except Exception:
+        return os.getenv(key)
+
 # Initialize Pinecone client
-pinecone_client = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-index = pinecone_client.Index(os.getenv("PINECONE_INDEX_NAME"))
+pinecone_client = Pinecone(api_key=get_secret("PINECONE_API_KEY"))
+index = pinecone_client.Index(get_secret("PINECONE_INDEX_NAME"))
 
 def store_in_pinecone(chunks: List[str], embeddings: List[List[float]], namespace: str = ""):
     vectors_to_upsert = []
